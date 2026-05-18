@@ -36,15 +36,37 @@ function guardarCliente(){
   let apellido = recuperaraTexto("txtApellido");
   let ingresos = recuperarFloat("txtIngresos");
   let egresos = recuperarFloat("txtEgresos");
-  let nuevoCliente = {}
+  let nuevoCliente = {};
+  let clienteExistente = buscarCliente(cedula);
+
+  if(clienteExistente == null){
   
-  nuevoCliente.cedula = cedula;
-  nuevoCliente.nombre = nombre;
-  nuevoCliente.apellido = apellido;
-  nuevoCliente.ingresos = ingresos;
-  nuevoCliente.egresos = egresos;
-  clientes.push(nuevoCliente);
+    nuevoCliente.cedula = cedula;
+    nuevoCliente.nombre = nombre;
+    nuevoCliente.apellido = apellido;
+    nuevoCliente.ingresos = ingresos;
+    nuevoCliente.egresos = egresos;
+
+    clientes.push(nuevoCliente);
+
+  }else{
+    clienteExistente.nombre = nombre;
+    clienteExistente.apellido = apellido;
+    clienteExistente.ingresos = ingresos;
+    clienteExistente.egresos = egresos;
+  }
+  
   pintarClientes();
+  limpiar();
+  clienteSeleccionado = null;
+}
+
+limpiar = function(){
+  mostrarTextoEnCaja("txtCedula", "");
+  mostrarTextoEnCaja("txtNombre", "");
+  mostrarTextoEnCaja("txtApellido", "");
+  mostrarTextoEnCaja("txtIngresos", "");
+  mostrarTextoEnCaja("txtEgresos", "");
 }
 
 pintarClientes = function(){ 
@@ -58,10 +80,37 @@ pintarClientes = function(){
     "<td>" + cliente.apellido + "</td>"+
     "<td>" + cliente.ingresos + "</td>"+
     "<td>" + cliente.egresos + "</td>"+
-    "<td><button>Actualizar</button></td>"+
+    "<td><button onclick=\"seleccionarCliente('" + cliente.cedula + "')\">Actualizar</button></td>"+
     "</tr>";
   }
 
   cmpTabla.innerHTML = contenidoTabla;
+}
+
+function buscarCliente(cedula){
+  let clienteEncontrado = null;
+
+  for(let i=0; i<clientes.length; i++){
+    let cliente = clientes[i];
+
+    if(cliente.cedula == cedula){
+      clienteEncontrado = cliente;
+      break;
+    }
+  }
+  return clienteEncontrado;
+}
+
+function seleccionarCliente(cedula){
+  let cliente = buscarCliente(cedula);
+  if(cliente != null){
+    clienteSeleccionado = cliente;
+    mostrarTextoEnCaja("txtCedula", cliente.cedula);
+    mostrarTextoEnCaja("txtNombre", cliente.nombre);
+    mostrarTextoEnCaja("txtApellido", cliente.apellido);
+    mostrarTextoEnCaja("txtIngresos", cliente.ingresos);
+    mostrarTextoEnCaja("txtEgresos", cliente.egresos);
+  }
+
 }
 //Para recuperar o mostrar información usar los métodos de la clase utilitarios, puede agregar métodos adicionales en utilitarios
